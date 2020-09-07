@@ -87,11 +87,13 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 18,
-    marginVertical: 3,
+    marginVertical: 2,
+    fontFamily: "bold-text",
   },
   price: {
     fontSize: 14,
     color: "#888",
+    fontFamily: "bold-text",
   },
 });
 
