@@ -1,32 +1,56 @@
 import React from "react";
-import { StyleSheet, View, Text, Image, Button } from "react-native";
+import {
+  StyleSheet,
+  View,
+  Text,
+  Image,
+  Button,
+  TouchableOpacity,
+  Platform,
+  TouchableNativeFeedback,
+} from "react-native";
 import Colors from "../../constants/Colors";
 
 const ProductItem2 = (props) => {
+  let TouchableComp = TouchableOpacity;
+
+  if (Platform.OS === "android" && Platform.Version >= 21) {
+    TouchableComp = TouchableNativeFeedback;
+  }
   return (
     <View style={styles.container}>
-      <View style={styles.imageCont}>
-        <Image style={styles.image} source={{ uri: props.image }} />
-      </View>
-      <View style={styles.rightPanel}>
-        <View style={styles.details}>
-          <Text numberOfLines={2} style={styles.title}>
-            {props.title}
-          </Text>
-          <Text style={styles.price}>${props.price.toFixed(2)}</Text>
-        </View>
-        <View style={styles.row}>
-          <View style={styles.buttonOption}>
-            <Button
-              color={Colors.accent}
-              onPress={props.onViewDetail}
-              title="Details"
-            />
+      <View style={styles.touchable}>
+        <TouchableComp onPress={props.onViewDetail} useForeground>
+          <View style={{ flexDirection: "row" }}>
+            <View style={styles.imageCont}>
+              <Image style={styles.image} source={{ uri: props.image }} />
+            </View>
+            <View style={styles.rightPanel}>
+              <View style={styles.details}>
+                <Text numberOfLines={2} style={styles.title}>
+                  {props.title}
+                </Text>
+                <Text style={styles.price}>${props.price.toFixed(2)}</Text>
+              </View>
+              <View style={styles.row}>
+                <View style={styles.buttonOption}>
+                  <Button
+                    color={Colors.accent}
+                    onPress={props.onViewDetail}
+                    title="Details"
+                  />
+                </View>
+                <View style={styles.buttonMain}>
+                  <Button
+                    color={Platform.OS === "android" ? Colors.primary : "white"}
+                    onPress={props.onToCart}
+                    title="To Cart"
+                  />
+                </View>
+              </View>
+            </View>
           </View>
-          <View style={styles.buttonMain}>
-            <Button color="white" onPress={props.onToCart} title="To Cart" />
-          </View>
-        </View>
+        </TouchableComp>
       </View>
     </View>
   );
@@ -45,6 +69,11 @@ const styles = StyleSheet.create({
     marginHorizontal: 15,
     marginVertical: 10,
     flexDirection: "row",
+    overflow: "hidden",
+  },
+  touchable: {
+    overflow: "hidden",
+    borderRadius: 10,
   },
   rightPanel: {
     height: "100%",
