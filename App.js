@@ -1,23 +1,25 @@
 import React, { useState } from "react";
-import { StyleSheet, Text, View } from "react-native";
 import { createStore, combineReducers } from "redux";
 import { Provider } from "react-redux";
-import productsReducer from "./store/reducers/products";
-import ProductsNavigator from "./navigation/ShopNavigator";
 import { AppLoading } from "expo";
 import * as Font from "expo-font";
 
+import productsReducer from "./store/reducers/products";
+import cartReducer from "./store/reducers/cart";
+import ShopNavigator from "./navigation/ShopNavigator";
+import { composeWithDevTools } from "redux-devtools-extension";
 const rootReducer = combineReducers({
   products: productsReducer,
+  cart: cartReducer,
 });
 
-const store = createStore(rootReducer);
+const store = createStore(rootReducer, composeWithDevTools());
 
 const fetchFonts = () => {
   return Font.loadAsync({
-    "extra-bold-text": require("./assets/fonts/Nunito-ExtraBold.ttf"),
-    "bold-text": require("./assets/fonts/Nunito-Bold.ttf"),
     "normal-text": require("./assets/fonts/Nunito-Regular.ttf"),
+    "bold-text": require("./assets/fonts/Nunito-Bold.ttf"),
+    "extra-bold-text": require("./assets/fonts/Nunito-ExtraBold.ttf"),
   });
 };
 
@@ -36,13 +38,7 @@ export default function App() {
   }
   return (
     <Provider store={store}>
-      <ProductsNavigator />
+      <ShopNavigator />
     </Provider>
   );
 }
-
-const styles = StyleSheet.create({
-  cont: {
-    flex: 1,
-  },
-});

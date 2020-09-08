@@ -1,52 +1,40 @@
-import React, { useState } from "react";
-import { FlatList, Text, View, Button } from "react-native";
-import { useSelector } from "react-redux";
+import React from "react";
+import { FlatList } from "react-native";
+import { useSelector, useDispatch } from "react-redux";
+
 import ProductItem from "../../components/shop/ProductItem";
+import * as cartActions from "../../store/actions/cart";
 
-import ProductItem2 from "../../components/shop/ProductItem2";
-
-const ProductOverviewScreen = (props) => {
-  const [view, setView] = useState(false);
+const ProductsOverviewScreen = (props) => {
   const products = useSelector((state) => state.products.availableProducts);
+  const dispatch = useDispatch();
+
   return (
-    <View>
-      <Button title="Change View" onPress={() => setView(!view)} />
-      <FlatList
-        data={products}
-        renderItem={(itemData) =>
-          view ? (
-            <ProductItem
-              title={itemData.item.title}
-              price={itemData.item.price}
-              image={itemData.item.imageUrl}
-              onViewDetail={() => {
-                props.navigation.navigate("ProductDetail", {
-                  productId: itemData.item.id,
-                  productTitle: itemData.item.title,
-                });
-              }}
-            />
-          ) : (
-            <ProductItem2
-              title={itemData.item.title}
-              price={itemData.item.price}
-              image={itemData.item.imageUrl}
-              onViewDetail={() => {
-                props.navigation.navigate("ProductDetail", {
-                  productId: itemData.item.id,
-                  productTitle: itemData.item.title,
-                });
-              }}
-            />
-          )
-        }
-      />
-    </View>
+    <FlatList
+      data={products}
+      keyExtractor={(item) => item.id}
+      renderItem={(itemData) => (
+        <ProductItem
+          image={itemData.item.imageUrl}
+          title={itemData.item.title}
+          price={itemData.item.price}
+          onViewDetail={() => {
+            props.navigation.navigate("ProductDetail", {
+              productId: itemData.item.id,
+              productTitle: itemData.item.title,
+            });
+          }}
+          onToCart={() => {
+            dispatch(cartActions.addToCart(itemData.item));
+          }}
+        />
+      )}
+    />
   );
 };
 
-ProductOverviewScreen.navigationOptions = {
+ProductsOverviewScreen.navigationOptions = {
   headerTitle: "All Products",
 };
 
-export default ProductOverviewScreen;
+export default ProductsOverviewScreen;
