@@ -18,7 +18,10 @@ const store = createStore(rootReducer, composeWithDevTools());
 const fetchFonts = () => {
   return Font.loadAsync({
     "normal-text": require("./assets/fonts/Nunito-Regular.ttf"),
+    "open-sans": require("./assets/fonts/Nunito-Regular.ttf"),
+    "open-sans-bold": require("./assets/fonts/Nunito-Bold.ttf"),
     "bold-text": require("./assets/fonts/Nunito-Bold.ttf"),
+
     "extra-bold-text": require("./assets/fonts/Nunito-ExtraBold.ttf"),
   });
 };
