@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { View } from "react-native";
 import { createStore, combineReducers } from "redux";
 import { Provider } from "react-redux";
 import { AppLoading } from "expo";
@@ -41,7 +42,9 @@ export default function App() {
   }
   return (
     <Provider store={store}>
-      <ShopNavigator />
+      <View style={{ flex: 1, backgroundColor: "red" }}>
+        <ShopNavigator />
+      </View>
     </Provider>
   );
 }

@@ -14,6 +14,7 @@ const ProductsOverviewScreen = (props) => {
     <FlatList
       data={products}
       keyExtractor={(item) => item.id}
+      style={{ backgroundColor: "#fff" }}
       renderItem={(itemData) => (
         <ProductItem
           image={itemData.item.imageUrl}
