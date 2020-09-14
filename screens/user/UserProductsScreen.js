@@ -5,6 +5,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { HeaderButtons, Item } from "react-navigation-header-buttons";
 import HeaderButton from "../../components/UI/HeaderButton";
 import Colors from "../../constants/Colors";
+import * as productActions from "../../store/actions/products";
 
 const UserProductScreen = (props) => {
   const userProducts = useSelector((state) => state.products.userProduct);
@@ -34,7 +35,13 @@ const UserProductScreen = (props) => {
               editProductHandler(itemData.item.id);
             }}
           />
-          <Button color={Colors.primary} title="Delete" onPress={() => {}} />
+          <Button
+            color={Colors.primary}
+            title="Delete"
+            onPress={() => {
+              dispatch(productActions.deleteProduct(itemData.item.id));
+            }}
+          />
         </ProductItem>
       )}
     />
