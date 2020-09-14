@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import {
   Button,
   StyleSheet,
@@ -19,9 +19,6 @@ const EditProductScreen = (props) => {
     state.products.userProduct.find((prod) => prod.id === prodId)
   );
 
-  if (prodId) {
-  }
-
   const [title, setTitle] = useState(editedProduct ? editedProduct.title : "");
   const [imageUrl, setImgUrl] = useState(
     editedProduct ? editedProduct.imageUrl : ""
@@ -30,6 +27,14 @@ const EditProductScreen = (props) => {
   const [description, setDescription] = useState(
     editedProduct ? editedProduct.description : ""
   );
+
+  const submitHandler = useCallback(() => {
+    console.log("Wuurks");
+  }, []);
+
+  useEffect(() => {
+    props.navigation.setParams({ submit: submitHandler });
+  }, [submitHandler]);
 
   return (
     <ScrollView>
@@ -74,6 +79,7 @@ const EditProductScreen = (props) => {
 };
 
 EditProductScreen.navigationOptions = (navData) => {
+  const submitFn = navData.navigation.getParam("submit");
   return {
     headerTitle: navData.navigation.getParam(
       "productId" ? "Edit Product" : "Add Product"
@@ -87,9 +93,7 @@ EditProductScreen.navigationOptions = (navData) => {
               ? "md-checkmark-circle-outline"
               : "ios-checkmark-circle-outline"
           }
-          onPress={() => {
-            navData.navigation.navigate("EditProduct");
-          }}
+          onPress={submitFn}
         />
       </HeaderButtons>
     ),
