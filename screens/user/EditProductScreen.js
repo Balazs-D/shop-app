@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
 import {
-  Button,
   StyleSheet,
   View,
   Text,
@@ -39,6 +38,7 @@ const EditProductScreen = (props) => {
         productActions.createProduct(title, description, imageUrl, +price)
       );
     }
+    props.navigation.goBack();
   }, [dispatch, editedProduct, prodId, title, description, imageUrl, price]);
 
   useEffect(() => {
