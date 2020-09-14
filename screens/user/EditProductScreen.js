@@ -10,14 +10,15 @@ import {
 } from "react-native";
 import { HeaderButtons, Item } from "react-navigation-header-buttons";
 import HeaderButton from "../../components/UI/HeaderButton";
-import Colors from "../../constants/Colors";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
+import * as productActions from "../../store/actions/products";
 
 const EditProductScreen = (props) => {
   const prodId = props.navigation.getParam("productId");
   const editedProduct = useSelector((state) =>
     state.products.userProduct.find((prod) => prod.id === prodId)
   );
+  const dispatch = useDispatch();
 
   const [title, setTitle] = useState(editedProduct ? editedProduct.title : "");
   const [imageUrl, setImgUrl] = useState(
@@ -29,8 +30,16 @@ const EditProductScreen = (props) => {
   );
 
   const submitHandler = useCallback(() => {
-    console.log("Wuurks");
-  }, []);
+    if (editedProduct) {
+      dispatch(
+        productActions.updateProduct(prodId, title, description, imageUrl)
+      );
+    } else {
+      dispatch(
+        productActions.createProduct(title, description, imageUrl, +price)
+      );
+    }
+  }, [dispatch, editedProduct, prodId, title, description, imageUrl, price]);
 
   useEffect(() => {
     props.navigation.setParams({ submit: submitHandler });
