@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useEffect, useCallback, useReducer } from "react";
 import {
   StyleSheet,
   View,
@@ -12,6 +12,12 @@ import HeaderButton from "../../components/UI/HeaderButton";
 import { useSelector, useDispatch } from "react-redux";
 import * as productActions from "../../store/actions/products";
 
+const FORM_INPUT_UPDATE = "FORM_INPUT_UPDATE";
+const formReducer = (state, action) => {
+  if (action.type === "FORM_INPUT_UPDATE") {
+  }
+};
+
 const EditProductScreen = (props) => {
   const prodId = props.navigation.getParam("productId");
   const editedProduct = useSelector((state) =>
@@ -19,14 +25,21 @@ const EditProductScreen = (props) => {
   );
   const dispatch = useDispatch();
 
-  const [title, setTitle] = useState(editedProduct ? editedProduct.title : "");
-  const [imageUrl, setImgUrl] = useState(
-    editedProduct ? editedProduct.imageUrl : ""
-  );
-  const [price, setPrice] = useState("");
-  const [description, setDescription] = useState(
-    editedProduct ? editedProduct.description : ""
-  );
+  const [formState, dispatchFormState] = useReducer(formReducer, {
+    inputValues: {
+      title: editedProduct ? editedProduct.title : "",
+      imageUrl: editedProduct ? editedProduct.imageUrl : "",
+      description: editedProduct ? editedProduct.description : "",
+      price: "",
+    },
+    inputValidities: {
+      title: editedProduct ? true : false,
+      imageUrl: editedProduct ? true : false,
+      description: editedProduct ? true : false,
+      price: editedProduct ? true : false,
+    },
+    formIsValid: editedProduct ? true : false,
+  });
 
   const submitHandler = useCallback(() => {
     if (editedProduct) {
@@ -44,6 +57,19 @@ const EditProductScreen = (props) => {
   useEffect(() => {
     props.navigation.setParams({ submit: submitHandler });
   }, [submitHandler]);
+
+  const titleChangeHandler = (text) => {
+    let isValid = false;
+    if (text.trim().length > 0) {
+      isValid = true;
+    }
+    dispatchFormState({
+      type: FORM_INPUT_UPDATE,
+      value: text,
+      isValid: isValid,
+      input: "title",
+    });
+  };
 
   return (
     <ScrollView>
