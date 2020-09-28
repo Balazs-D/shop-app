@@ -2,17 +2,24 @@ import PRODUCTS from "../../data/dummy-data";
 import {
   CREATE_PRODUCT,
   DELETE_PRODUCT,
+  SET_PRODUCTS,
   UPDATE_PRODUCT,
 } from "../actions/products";
 import Product from "../../models/product";
 
 const initialState = {
   availableProducts: PRODUCTS,
-  userProduct: PRODUCTS.filter((prod) => prod.ownerId === "u1"),
+  userProducts: PRODUCTS.filter((prod) => prod.ownerId === "u1"),
 };
 
 export default (state = initialState, action) => {
   switch (action.type) {
+    case SET_PRODUCTS:
+      return {
+        availableProducts: action.products,
+        userProducts: action.products.filter((prod) => prod.ownerId === "u1"),
+      };
+
     case CREATE_PRODUCT:
       const newProduct = new Product(
         action.productData.id,
@@ -26,21 +33,21 @@ export default (state = initialState, action) => {
       return {
         ...state,
         availableProducts: state.availableProducts.concat(newProduct),
-        userProduct: state.availableProducts.concat(newProduct),
+        userProducts: state.availableProducts.concat(newProduct),
       };
     case UPDATE_PRODUCT:
-      const productIndex = state.userProduct.findIndex(
+      const productIndex = state.userProducts.findIndex(
         (prod) => prod.id === action.pid
       );
       const updatedProduct = new Product(
         action.pid,
-        state.userProduct[productIndex].ownerId,
+        state.userProducts[productIndex].ownerId,
         action.productData.title,
         action.productData.imageUrl,
         action.productData.description,
-        state.userProduct[productIndex].price
+        state.userProducts[productIndex].price
       );
-      const updatedUserProducts = [...state.userProduct];
+      const updatedUserProducts = [...state.userProducts];
       updatedUserProducts[productIndex] = updatedProduct;
       const availableProductIndex = state.availableProducts.findIndex(
         (prod) => prod.id === action.pid
@@ -56,7 +63,7 @@ export default (state = initialState, action) => {
     case DELETE_PRODUCT:
       return {
         ...state,
-        userProduct: state.userProduct.filter(
+        userProducts: state.userProducts.filter(
           (product) => product.id !== action.pid
         ),
         availableProducts: state.availableProducts.filter(
