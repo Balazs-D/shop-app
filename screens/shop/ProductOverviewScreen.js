@@ -15,12 +15,14 @@ import Colors from "../../constants/Colors";
 import ProductItem from "../../components/shop/ProductItem";
 import * as cartActions from "../../store/actions/cart";
 import * as productActions from "../../store/actions/products";
+import { isRequired } from "react-native/Libraries/DeprecatedPropTypes/DeprecatedColorPropType";
 
 const ProductsOverviewScreen = (props) => {
   const products = useSelector((state) => state.products.availableProducts);
   const dispatch = useDispatch();
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState();
+  const [refreshing, setRefreshing] = useState(false);
 
   const selectItem = (id, title) => {
     props.navigation.navigate("ProductDetail", {
@@ -30,13 +32,13 @@ const ProductsOverviewScreen = (props) => {
   };
   const loadProducts = useCallback(async () => {
     setError(null);
-    setIsLoading(true);
+    setRefreshing(true);
     try {
       await dispatch(productActions.fetchProducts());
     } catch (err) {
       setError(err.message);
     }
-    setIsLoading(false);
+    setRefreshing(false);
   }, [dispatch, setIsLoading, setError]);
 
   useEffect(() => {
@@ -50,7 +52,11 @@ const ProductsOverviewScreen = (props) => {
   }, [loadProducts]);
 
   useEffect(() => {
-    loadProducts();
+    setIsLoading(true);
+
+    loadProducts().then(() => {
+      setIsLoading(false);
+    });
   }, [dispatch, loadProducts]);
 
   if (error) {
@@ -84,6 +90,8 @@ const ProductsOverviewScreen = (props) => {
 
   return (
     <FlatList
+      onRefresh={loadProducts}
+      refreshing={refreshing}
       data={products}
       keyExtractor={(item) => item.id}
       style={{ backgroundColor: "#fff" }}
